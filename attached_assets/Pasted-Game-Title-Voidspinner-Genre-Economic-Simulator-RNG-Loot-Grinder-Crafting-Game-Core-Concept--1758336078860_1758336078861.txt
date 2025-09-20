@@ -1,0 +1,36 @@
+Game Title: Voidspinner
+Genre:
+Economic Simulator, RNG-Loot Grinder, Crafting Game
+Core Concept:
+You are a "Voidspinner," an artisan who has access to a mysterious device that pulls raw matter and concepts from a chaotic dimension known as the "Void." Your core action is to "Spin" the device, which costs an energy source called "Flux." Each Spin manifests a "Fragment"—a base item, a component, a blueprint, or a powerful modifier.
+Your goal is to manage your Flux, strategically sell or dismantle the Fragments you don't need, and use the ones you keep to craft and mutate items of unimaginable rarity and power. The entire game is a high-stakes economic loop driven by pure, multi-layered RNG.
+Super Advanced RNG Mechanics:
+The Spin & The Fragment Pool (Core RNG):
+Clicking the [SPIN] button is your primary action. It consumes Flux and generates a Fragment.
+The RNG isn't just one roll; it's a sequence of rolls that determines the Fragment's nature:
+Roll 1: Fragment Type: Is it a Base Item (e.g., a gear), a Raw Component (e.g., Void Iron), a Modifier (e.g., an "Essence of Haste"), or a Blueprint?
+Roll 2: Rarity Tier: (Common, Uncommon, Rare, Epic, Legendary, Mythic, Void-Touched). The odds are astronomically steep. You might see a Legendary once every few thousand spins, and a Void-Touched once in millions.
+Roll 3: Base Stats: Every item has core stats. The RNG determines where on the spectrum these stats fall (e.g., a Common gear might have 5-10 Power, while a Legendary has 500-1000).
+Roll 4: Implicit Modifiers: This is a crucial layer. Every Fragment has a chance to roll 1-4 "Implicit" mods—inherent properties that cannot be changed. This is what makes two items of the same name and rarity completely different. An "Iron Gauntlet" might roll with +10 Health, while another identical one rolls with +5% Spin Speed.
+The Mutation System (Advanced RNG Crafting):
+This is where true mastery lies. You don't just craft items; you mutate them.
+To mutate, you take a Base Item and combine it with Components and Modifiers. This process is highly volatile.
+The Mutation RNG:
+Success/Failure: The craft can simply fail, consuming the components and potentially damaging the base item.
+Affix Addition: If successful, the properties of the components are added to the item as new "Affixes."
+Mutation Event (The Core of the System): There is a small but crucial chance of a "Mutation." This is where the RNG goes wild. A Mutation can:
+Upgrade an Affix Tier: A +10 Strength affix could mutate into +15 Strength (Tier 2).
+Evolve an Affix: +15 Strength could mutate into the unique affix Might of the Colossus, which also adds stun resistance.
+Generate a Paradox: Two conflicting affixes (e.g., +Fire Damage and +Ice Damage) could mutate into a powerful, paradoxical affix like Elemental Chaos, which randomly switches your damage type.
+Corrupt the Item: The item becomes "Corrupted." This locks it from further mutation but adds one final, powerful (or detrimental) random implicit modifier. This is a high-risk, high-reward endgame gamble.
+The Economy & Progression Loop:
+Flux: Your "spin" currency. You get it primarily by "Shattering" Fragments you don't want. The rarer the Fragment, the more Flux you get back. This creates the core loop: Spin -> Evaluate -> Shatter for more Spins.
+Marketplace: A simulated, dynamic marketplace where you can sell your best items to "virtual" buyers. The prices are determined by an RNG-driven supply and demand system. If many players (or the RNG) are generating items with "Haste," the market price for Haste items will drop.
+Upgrades: You can spend rare components not on items, but on upgrading the Voidspinner device itself.
+Increase Spin Speed: More spins per minute.
+Improve Rarity Odds: A permanent, tiny boost to your chance of finding rarer items.
+Reduce Flux Cost: Make each spin cheaper.
+Unlock Mutation Slots: Allow you to combine more components in a single craft, leading to more powerful and chaotic outcomes.
+Player Goal:
+The ultimate goal is to "break" the RNG. You are chasing the perfect item—a Void-Touched base, with 4 perfect Implicit mods, mutated with 6 synergistic, Tier-10 Evolved Affixes, and then successfully Corrupted to add one final, god-tier power.
+The game is a "numbers go up" simulator on an exponential scale. It's a game of patience, probability management, and the pure dopamine rush of seeing a one-in-a-billion roll land in your lap. It's less about a story and more about the personal journey of turning pure chaos into statistical perfection.

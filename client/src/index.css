@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(240, 10%, 4%);
+  --foreground: hsl(240, 5%, 95%);
+  --card: hsl(240, 6%, 8%);
+  --card-foreground: hsl(240, 5%, 90%);
+  --popover: hsl(240, 6%, 8%);
+  --popover-foreground: hsl(240, 5%, 90%);
+  --primary: hsl(258, 90%, 66%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(240, 4%, 16%);
+  --secondary-foreground: hsl(240, 5%, 84%);
+  --muted: hsl(240, 4%, 12%);
+  --muted-foreground: hsl(240, 3%, 60%);
+  --accent: hsl(258, 90%, 66%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 76%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 6%, 20%);
+  --input: hsl(240, 6%, 20%);
+  --ring: hsl(258, 90%, 66%);
+  --chart-1: hsl(258, 90%, 66%);
+  --chart-2: hsl(159, 100%, 36%);
+  --chart-3: hsl(42, 93%, 56%);
+  --chart-4: hsl(147, 79%, 42%);
+  --chart-5: hsl(341, 75%, 51%);
+  --sidebar: hsl(240, 6%, 8%);
+  --sidebar-foreground: hsl(240, 5%, 90%);
+  --sidebar-primary: hsl(258, 90%, 66%);
+  --sidebar-primary-foreground: hsl(0, 0%, 98%);
+  --sidebar-accent: hsl(240, 4%, 16%);
+  --sidebar-accent-foreground: hsl(258, 90%, 66%);
+  --sidebar-border: hsl(240, 6%, 20%);
+  --sidebar-ring: hsl(258, 90%, 66%);
+  --font-sans: Inter, sans-serif;
+  --font-serif: Cinzel, serif;
+  --font-mono: JetBrains Mono, monospace;
+  --radius: 0.75rem;
+  --shadow-2xs: 0px 1px 2px 0px hsl(0, 0%, 0%, 0.05);
+  --shadow-xs: 0px 1px 2px 0px hsl(0, 0%, 0%, 0.05);
+  --shadow-sm: 0px 1px 3px 0px hsl(0, 0%, 0%, 0.1), 0px 1px 2px -1px hsl(0, 0%, 0%, 0.1);
+  --shadow: 0px 1px 3px 0px hsl(0, 0%, 0%, 0.1), 0px 1px 2px -1px hsl(0, 0%, 0%, 0.1);
+  --shadow-md: 0px 4px 6px -1px hsl(0, 0%, 0%, 0.1), 0px 2px 4px -2px hsl(0, 0%, 0%, 0.1);
+  --shadow-lg: 0px 10px 15px -3px hsl(0, 0%, 0%, 0.1), 0px 4px 6px -4px hsl(0, 0%, 0%, 0.1);
+  --shadow-xl: 0px 20px 25px -5px hsl(0, 0%, 0%, 0.1), 0px 8px 10px -6px hsl(0, 0%, 0%, 0.1);
+  --shadow-2xl: 0px 25px 50px -12px hsl(0, 0%, 0%, 0.25);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+}
+
+.dark {
+  --background: hsl(240, 10%, 4%);
+  --foreground: hsl(240, 5%, 95%);
+  --card: hsl(240, 6%, 8%);
+  --card-foreground: hsl(240, 5%, 90%);
+  --popover: hsl(240, 6%, 8%);
+  --popover-foreground: hsl(240, 5%, 90%);
+  --primary: hsl(258, 90%, 66%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsl(240, 4%, 16%);
+  --secondary-foreground: hsl(240, 5%, 84%);
+  --muted: hsl(240, 4%, 12%);
+  --muted-foreground: hsl(240, 3%, 60%);
+  --accent: hsl(258, 90%, 66%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 76%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 6%, 20%);
+  --input: hsl(240, 6%, 20%);
+  --ring: hsl(258, 90%, 66%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply dark;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .bg-gradient-radial {
+    background: radial-gradient(circle at center, var(--tw-gradient-stops));
+  }
+  
+  .void-glow {
+    background: radial-gradient(circle at center, hsl(258 90% 66% / 0.2) 0%, transparent 70%);
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-spin-slow {
+    animation: spin 8s linear infinite;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+}
+
+@keyframes glow {
+  from { 
+    box-shadow: 0 0 20px hsl(258 90% 66% / 0.4); 
+  }
+  to { 
+    box-shadow: 0 0 30px hsl(258 90% 66% / 0.8), 0 0 40px hsl(258 90% 66% / 0.4); 
+  }
+}
+
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px); 
+  }
+  50% { 
+    transform: translateY(-10px); 
+  }
+}
+
+/* Rarity colors */
+.rarity-common { 
+  border-color: hsl(0, 0%, 60%); 
+}
+
+.rarity-uncommon { 
+  border-color: hsl(120, 60%, 60%); 
+}
+
+.rarity-rare { 
+  border-color: hsl(210, 100%, 60%); 
+}
+
+.rarity-epic { 
+  border-color: hsl(270, 100%, 70%); 
+}
+
+.rarity-legendary { 
+  border-color: hsl(45, 100%, 60%); 
+}
+
+.rarity-mythic { 
+  border-color: hsl(0, 100%, 60%); 
+}
+
+.rarity-void-touched { 
+  border-color: hsl(258, 90%, 66%);
+  box-shadow: 0 0 20px hsl(258 90% 66% / 0.5);
+}
