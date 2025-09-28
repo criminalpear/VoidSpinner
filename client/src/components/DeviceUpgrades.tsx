@@ -71,7 +71,7 @@ export default function DeviceUpgrades({ gameState }: DeviceUpgradesProps) {
   ];
 
   return (
-    <Card className="bg-card/80 backdrop-blur-sm border-border h-full" data-testid="device-upgrades">
+    <Card className="bg-card/80 backdrop-blur-sm border-border" data-testid="device-upgrades">
       <CardHeader>
         <CardTitle className="text-lg font-serif">Device Upgrades</CardTitle>
       </CardHeader>

@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertGameStateSchema, insertFragmentSchema, FragmentType, Rarity } from "@shared/schema";
+import { insertGameStateSchema, insertFragmentSchema, FragmentType, Rarity, GameState, Fragment } from "@shared/schema";
 import { generateFragment, calculateShatterValue, calculateDeviceUpgradeCost, calculateMutationSuccessRate, calculateMutationCost, performMutation, type MutationRequest } from "./gameLogic";
 import "./types"; // Import session types
 
@@ -143,6 +143,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ fluxGained });
     } catch (error) {
       res.status(500).json({ message: "Failed to shatter fragment" });
+    }
+  });
+
+  // Sell fragment
+  app.post("/api/sell", async (req, res) => {
+    try {
+      const userId = req.session?.userId;
+      if (!userId) return res.status(401).json({ message: "Unauthorized" });
+
+      const { fragmentId } = req.body as { fragmentId?: string };
+      if (!fragmentId) return res.status(400).json({ message: "Missing fragmentId" });
+
+      const gameState = await storage.getGameState(userId);
+      if (!gameState) return res.status(404).json({ message: "Game state not found" });
+
+      const fragments = await storage.getFragments(gameState.id);
+      const fragment = fragments.find(f => f.id === fragmentId);
+      if (!fragment) return res.status(404).json({ message: "Fragment not found" });
+
+      // Determine price from marketplace listing
+      const listings = await storage.getMarketplaceListings();
+      const listingId = `${fragment.type}-${fragment.rarity}`;
+      const listing = listings.find(l => l.id === listingId);
+
+      // Fallback price if listing missing
+      const basePrice = listing ? listing.currentPrice : 10;
+      const quantity = fragment.quantity ?? 1;
+      const price = Math.max(1, Math.round(basePrice * quantity));
+
+      // Update flux and remove fragment
+      await storage.updateGameState(userId, { flux: gameState.flux + price });
+      await storage.deleteFragment(fragment.id);
+
+      // Adjust marketplace supply and price slightly
+      try {
+        if (listing) {
+          const newSupply = Math.max(0, listing.supply - 1);
+          const newDemand = Math.min(3, listing.demand + 0.01);
+          const newPrice = Math.max(1, Math.round(listing.currentPrice * (1 + (0.01 * (1 - newDemand)))));
+          await storage.updateMarketplaceListing(listing.fragmentType, listing.rarity, {
+            supply: newSupply,
+            demand: newDemand,
+            currentPrice: newPrice,
+          });
+        }
+      } catch (e) {
+        // Non-fatal
+        console.warn('Failed to update marketplace listing after sell', e);
+      }
+
+      res.json({ fluxGained: price });
+    } catch (error) {
+      console.error('Sell error:', error);
+      res.status(500).json({ message: 'Failed to sell fragment' });
     }
   });
 

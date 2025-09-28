@@ -2,7 +2,14 @@ import { useState } from "react";
 import { Fragment } from "@shared/schema";
 import { getRarityColor, getFragmentIcon, calculateShatterValue } from "@/lib/gameLogic";
 import { motion } from "framer-motion";
+import iconCommon from "@assets/icons/fragment-common.png";
+import iconRare from "@assets/icons/fragment-rare.png";
+import iconEpic from "@assets/icons/fragment-epic.png";
+import iconLegendary from "@assets/icons/fragment-legendary.png";
 import { Button } from "@/components/ui/button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -15,14 +22,40 @@ interface FragmentInventoryProps {
   isLoading: boolean;
 }
 
-export default function FragmentInventory({ 
-  fragments, 
-  selectedFragment, 
-  onSelectFragment, 
+export default function FragmentInventory({
+  fragments,
+  selectedFragment,
+  onSelectFragment,
   onShatterFragment,
   isShatteringFragment,
-  isLoading 
+  isLoading
 }: FragmentInventoryProps) {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [sellTarget, setSellTarget] = useState<Fragment | null>(null);
+
+  const sellMutation = useMutation({
+    mutationFn: async (fragmentId: string) => {
+      const res = await fetch('/api/sell', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fragmentId }),
+        credentials: 'include',
+      });
+      if (!res.ok) throw new Error(`Sell failed: ${res.status}`);
+      return res.json();
+    },
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/fragments'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/gamestate'] });
+      toast({ title: 'Sold fragment', description: `Gained ${data.fluxGained} Flux` });
+      setSellTarget(null);
+    },
+    onError: (err: any) => {
+      console.error('Sell failed', err);
+      toast({ title: 'Sell failed', description: err.message || 'Failed to sell fragment', variant: 'destructive' });
+    },
+  });
   const filterButtons = [
     { label: 'All', filter: null },
     { label: 'Items', filter: 'base_item' },
@@ -32,7 +65,7 @@ export default function FragmentInventory({
 
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
-  const filteredFragments = activeFilter 
+  const filteredFragments = activeFilter
     ? fragments.filter(f => f.type === activeFilter)
     : fragments;
 
@@ -69,7 +102,7 @@ export default function FragmentInventory({
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="flex-1 flex flex-col">
         {/* Inventory Grid */}
         <div className="flex-1 overflow-y-auto mb-6">
@@ -87,43 +120,52 @@ export default function FragmentInventory({
                 const rarityColor = getRarityColor(fragment.rarity);
                 const icon = getFragmentIcon(fragment.type);
                 const isSelected = selectedFragment?.id === fragment.id;
-                
+
                 return (
                   <motion.div
                     key={fragment.id}
-                    className={`aspect-square bg-secondary/50 border-2 rounded-lg p-2 hover:bg-secondary/70 cursor-pointer transition-all relative ${rarityColor} ${
-                      isSelected ? 'ring-2 ring-primary' : ''
-                    }`}
+                    className={`aspect-square bg-secondary/50 border-2 rounded-lg p-2 hover:bg-secondary/70 cursor-pointer transition-all relative ${rarityColor} ${isSelected ? 'ring-2 ring-primary' : ''
+                      }`}
                     onClick={() => onSelectFragment(fragment)}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     data-testid={`fragment-${fragment.id}`}
                   >
-                    <div className={`w-full h-full bg-gradient-to-br rounded-md flex items-center justify-center ${
-                      fragment.rarity === 'legendary' ? 'from-yellow-600/20 to-orange-600/20' :
-                      fragment.rarity === 'epic' ? 'from-purple-600/20 to-pink-600/20' :
-                      fragment.rarity === 'rare' ? 'from-blue-600/20 to-cyan-600/20' :
-                      fragment.rarity === 'uncommon' ? 'from-green-600/20 to-emerald-600/20' :
-                      fragment.rarity === 'mythic' ? 'from-red-600/20 to-crimson-600/20' :
-                      fragment.rarity === 'void_touched' ? 'from-purple-500/20 to-indigo-500/20' :
-                      'from-gray-600/20 to-gray-700/20'
-                    }`}>
-                      <i className={`fas ${icon} text-2xl ${rarityColor.split(' ')[0]}`}></i>
+                    <div className={`w-full h-full bg-gradient-to-br rounded-md flex items-center justify-center ${fragment.rarity === 'legendary' ? 'from-yellow-600/20 to-orange-600/20' :
+                        fragment.rarity === 'epic' ? 'from-purple-600/20 to-pink-600/20' :
+                          fragment.rarity === 'rare' ? 'from-blue-600/20 to-cyan-600/20' :
+                            fragment.rarity === 'uncommon' ? 'from-green-600/20 to-emerald-600/20' :
+                              fragment.rarity === 'mythic' ? 'from-red-600/20 to-crimson-600/20' :
+                                fragment.rarity === 'void_touched' ? 'from-purple-500/20 to-indigo-500/20' :
+                                  'from-gray-600/20 to-gray-700/20'
+                      }`}>
+                      {/* Image for fragment (placeholder) */}
+                      <img
+                        src={
+                          (fragment as any).imageUrl || (
+                            fragment.rarity === 'legendary' ? iconLegendary :
+                              fragment.rarity === 'epic' ? iconEpic :
+                                fragment.rarity === 'rare' ? iconRare :
+                                  iconCommon
+                          )
+                        }
+                        alt={fragment.name}
+                        className="w-12 h-12 object-cover rounded"
+                      />
                     </div>
-                    
+
                     {/* Rarity indicator */}
-                    <div className={`absolute bottom-1 right-1 text-xs px-1 rounded ${
-                      fragment.rarity === 'void_touched' ? 'bg-purple-900/80 text-purple-300' :
-                      fragment.rarity === 'mythic' ? 'bg-red-900/80 text-red-400' :
-                      fragment.rarity === 'legendary' ? 'bg-yellow-900/80 text-yellow-400' :
-                      fragment.rarity === 'epic' ? 'bg-purple-900/80 text-purple-400' :
-                      fragment.rarity === 'rare' ? 'bg-blue-900/80 text-blue-400' :
-                      fragment.rarity === 'uncommon' ? 'bg-green-900/80 text-green-400' :
-                      'bg-gray-900/80 text-gray-400'
-                    }`}>
+                    <div className={`absolute bottom-1 right-1 text-xs px-1 rounded ${fragment.rarity === 'void_touched' ? 'bg-purple-900/80 text-purple-300' :
+                        fragment.rarity === 'mythic' ? 'bg-red-900/80 text-red-400' :
+                          fragment.rarity === 'legendary' ? 'bg-yellow-900/80 text-yellow-400' :
+                            fragment.rarity === 'epic' ? 'bg-purple-900/80 text-purple-400' :
+                              fragment.rarity === 'rare' ? 'bg-blue-900/80 text-blue-400' :
+                                fragment.rarity === 'uncommon' ? 'bg-green-900/80 text-green-400' :
+                                  'bg-gray-900/80 text-gray-400'
+                      }`}>
                       {fragment.rarity.charAt(0).toUpperCase()}
                     </div>
-                    
+
                     {/* Quantity */}
                     {fragment.quantity > 1 && (
                       <div className="absolute top-1 right-1 text-xs bg-black/80 text-white px-1 rounded">
@@ -133,7 +175,7 @@ export default function FragmentInventory({
                   </motion.div>
                 );
               })}
-              
+
               {/* Empty slots for visual consistency */}
               {Array.from({ length: Math.max(0, 8 - filteredFragments.length) }).map((_, index) => (
                 <div
@@ -144,10 +186,10 @@ export default function FragmentInventory({
             </div>
           )}
         </div>
-        
+
         {/* Selected Item Details */}
         {selectedFragment && (
-          <motion.div 
+          <motion.div
             className="bg-secondary/30 rounded-lg p-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -159,7 +201,7 @@ export default function FragmentInventory({
             <div className="text-sm text-muted-foreground mb-2 capitalize">
               {selectedFragment.type.replace('_', ' ')} - {selectedFragment.rarity}
             </div>
-            
+
             {/* Base Stats */}
             <div className="space-y-1 text-sm mb-3">
               {Object.entries(selectedFragment.baseStats as Record<string, number>).map(([stat, value]) => (
@@ -169,19 +211,19 @@ export default function FragmentInventory({
                 </div>
               ))}
             </div>
-            
+
             {/* Implicit Modifiers */}
             {Array.isArray(selectedFragment.implicitMods) && selectedFragment.implicitMods.length > 0 && (
               <div className="mb-3">
                 <div className="text-xs text-muted-foreground mb-1">Implicit Modifiers:</div>
-                {(selectedFragment.implicitMods as Array<{name: string, value: number}>).map((mod, index) => (
+                {(selectedFragment.implicitMods as Array<{ name: string, value: number }>).map((mod, index) => (
                   <div key={index} className="text-xs text-accent">
                     +{mod.value}% {mod.name}
                   </div>
                 ))}
               </div>
             )}
-            
+
             {/* Action Buttons */}
             <div className="flex gap-2">
               <Button
@@ -195,16 +237,38 @@ export default function FragmentInventory({
                 <i className="fas fa-hammer mr-1"></i>
                 {isShatteringFragment ? 'Shattering...' : `Shatter (+${calculateShatterValue(selectedFragment)} Flux)`}
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex-1"
-                disabled
-                data-testid="sell-button"
-              >
-                <i className="fas fa-coins mr-1"></i>
-                Sell (Coming Soon)
-              </Button>
+              <Dialog open={!!sellTarget} onOpenChange={(open) => { if (!open) setSellTarget(null); }}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => setSellTarget(selectedFragment)}
+                    disabled={sellMutation.isPending}
+                    data-testid="sell-button"
+                  >
+                    <i className="fas fa-coins mr-1"></i>
+                    {sellMutation.isPending ? 'Processing...' : 'Sell'}
+                  </Button>
+                </DialogTrigger>
+
+                <DialogContent className="max-w-sm">
+                  <DialogHeader>
+                    <DialogTitle>Confirm Sell</DialogTitle>
+                  </DialogHeader>
+                  <div className="py-2">
+                    Are you sure you want to sell <strong>{sellTarget?.name}</strong> for Flux?
+                  </div>
+                  <DialogFooter>
+                    <div className="flex gap-2 w-full">
+                      <Button variant="outline" className="flex-1" onClick={() => setSellTarget(null)}>Cancel</Button>
+                      <Button className="flex-1" onClick={() => sellTarget && sellMutation.mutate(sellTarget.id)} disabled={sellMutation.isPending}>
+                        {sellMutation.isPending ? 'Selling...' : 'Confirm Sell'}
+                      </Button>
+                    </div>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </motion.div>
         )}

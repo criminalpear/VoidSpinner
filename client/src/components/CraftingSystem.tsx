@@ -69,8 +69,9 @@ export default function CraftingSystem({ gameState }: CraftingSystemProps) {
   // Mutation mutation
   const mutateMutation = useMutation({
     mutationFn: async (request: MutationRequest) => {
-      const response = await apiRequest('/api/mutate', request);
-      return response as MutationResponse;
+      const response = await apiRequest('POST', '/api/mutate', request);
+      const json = await response.json();
+      return json as MutationResponse;
     },
     onSuccess: (data) => {
       if (data.success) {
@@ -155,7 +156,7 @@ export default function CraftingSystem({ gameState }: CraftingSystemProps) {
   };
 
   return (
-    <Card className="bg-card/80 backdrop-blur-sm border-border" data-testid="crafting-system">
+  <Card className="bg-card/80 backdrop-blur-sm border-border min-h-[160px] overflow-auto" data-testid="crafting-system">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-serif">Mutation Chamber</CardTitle>

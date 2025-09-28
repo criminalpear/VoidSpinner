@@ -326,4 +326,16 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
+// Choose storage implementation based on DATABASE_URL.
+// If DATABASE_URL points to a SQLite file (file:...), use in-memory MemStorage to avoid
+// trying to initialize Neon serverless (which expects a different connection string).
+let chosenStorage: IStorage;
+if (!process.env.DATABASE_URL || process.env.DATABASE_URL.startsWith('file:')) {
+  console.info('Using in-memory storage (MemStorage). DATABASE_URL is not a Neon connection.');
+  chosenStorage = new MemStorage();
+} else {
+  console.info('Using DatabaseStorage (Neon/Postgres).');
+  chosenStorage = new DatabaseStorage();
+}
+
+export const storage = chosenStorage;
