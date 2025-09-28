@@ -46,5 +46,52 @@ Where to look
 - Server: server/
 - Client: client/src/
 - Static assets: attached_assets/
+How to run VoidSpinner (local dev and production)
 
-If you want, I can also add a small README.md or an automated GitHub Actions workflow to build and deploy on push.
+Requirements
+- Node.js (v18+ recommended)
+- npm (or pnpm/yarn if you prefer, commands below use npm)
+
+Quick start (development)
+1) Install dependencies:
+   npm ci
+
+2) Create a local .env file (optional but recommended). Example minimal .env:
+   DATABASE_URL="file:./database.sqlite"
+   SESSION_SECRET="a-secure-secret-for-dev"
+   PORT=5000
+
+3) Run the app in development mode (server will run with Vite middleware so client hot-reloads):
+   npm run dev
+
+   - Server entry: `server/index.ts`
+   - Vite is configured to serve the client from `client/` in dev; server will proxy Vite dev middleware.
+
+Production build and run (one-time build)
+1) Build the client and bundle the server:
+   npm run build
+
+   This runs Vite build for the client and uses esbuild to bundle `server/index.ts` into `dist/index.js`.
+
+2) Start the production server:
+   npm start
+
+Notes about the database/storage
+- If you set DATABASE_URL to a SQLite file (example above), the server will use the in-memory `MemStorage` implementation so no external DB is required.
+- If you set DATABASE_URL to a real Postgres/Neon connection string, the server will use the `DatabaseStorage` implementation (Drizzle ORM). Make sure the DB is reachable and configured before running in production.
+
+Useful commands
+- Type-check the project: npm run check
+- Run database migrations (drizzle): npm run db:push
+- Clean install: rm -rf node_modules package-lock.json && npm ci
+
+Troubleshooting
+- If the server complains `DATABASE_URL must be set`, either add a `.env` with DATABASE_URL or set the environment variable before running.
+- For dev, the server uses Vite dev middleware and will hot-reload client changes.
+- For production, ensure `dist/public` exists after `npm run build` (Vite writes to `dist/public` per config).
+
+Where to look
+- Server: server/
+- Client: client/src/
+- Static assets: attached_assets/
+
