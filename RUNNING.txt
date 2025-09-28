@@ -13,6 +13,13 @@ Quick start (development)
    SESSION_SECRET="a-secure-secret-for-dev"
    PORT=5000
 
+Automatic local setup
+- Run the included helper script to create `.env` and a local SQLite database file:
+   ```bash
+   ./scripts/setup-local-db.sh
+   ```
+   The script generates a `SESSION_SECRET` and writes `DATABASE_URL="file:./database.sqlite"`.
+
 3) Run the app in development mode (server will run with Vite middleware so client hot-reloads):
    npm run dev
 

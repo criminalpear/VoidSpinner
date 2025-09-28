@@ -44,6 +44,19 @@ Troubleshooting
   - Run `npm ci` to ensure exact deps are installed.
   - For browserslist warnings, run `npx update-browserslist-db@latest`.
 
+Automatic local setup
+- There's a helper script at `./scripts/setup-local-db.sh` that will create a `.env` file and a local `database.sqlite` file with sensible defaults. It will generate a random `SESSION_SECRET` for you.
+
+Usage:
+```bash
+./scripts/setup-local-db.sh
+```
+
+After running that script, you can start the dev server with:
+```bash
+npm run dev
+```
+
 Files of interest
 - `server/` — server code and routes
 - `client/` — React app
