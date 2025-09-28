@@ -1,4 +1,4 @@
-# VoidSpinner
+## VoidSpinner
 
 Small dev README with instructions to run the app locally.
 
@@ -6,7 +6,15 @@ Requirements
 - Node.js (v18+ recommended)
 - npm
 
-Development
+## Installation:
+# Easy Installation:
+1. Open CodeSpace on main
+2. Open a terminal in the CodeSpace
+3. run:
+```bash
+npm run codespace
+```
+# Hard Installation 
 1. Install dependencies:
 ```bash
 npm ci
